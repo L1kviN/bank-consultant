@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Банковский консультант | Профессиональный подбор кредитов</title>
+    <style>
+        /* Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0e1a;
+            color: #e8edf2;
+            line-height: 1.5;
+        }
+
+        /* Typography */
+        h1, h2, h3, h4 {
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        /* Header */
+        .header {
+            background: #0a0e1a;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            background: rgba(10, 14, 26, 0.95);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text span {
+            color: #3b82f6;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+        }
+
+        .nav-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #3b82f6;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 100px 0 80px;
+            text-align: center;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.15);
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #fff, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: #94a3b8;
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+
+        /* Buttons */
+        .btn-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #3b82f6;
+            color: #3b82f6;
+        }
+
+        .btn-outline:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        /* Stats Section */
+        .stats {
+            padding: 60px 0;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.15);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            text-align: center;
+        }
+
+        .stat-item h3 {
+            font-size: 36px;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 8px;
+        }
+
+        .stat-item p {
+            font-size: 14px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Section Title */
+        .section-title {
+            font-size: 28px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        /* Banks Grid */
+        .banks-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 80px;
+        }
+
+        .bank-card {
+            background: #111827;
+            border: 1px solid #1f2a3a;
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.2s;
+        }
+
+        .bank-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+        }
+
+        .bank-card h3 {
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .bank-card .rate {
+            font-size: 28px;
+            font-weight: 700;
+            color: #3b82f6;
+            margin: 16px 0 8px;
+        }
+
+        .bank-card .rate small {
+            font-size: 14px;
+            font-weight: 400;
+            color: #64748b;
+        }
+
+        .bank-card .details {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 20px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 20px;
+            font-size: 12px;
+            color: #3b82f6;
+        }
+
+        /* Features */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+            margin: 60px 0;
+        }
+
+        .feature {
+            background: #111827;
+            border: 1px solid #1f2a3a;
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .feature h4 {
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .feature p {
+            font-size: 14px;
+            color: #94a3b8;
+            line-height: 1.6;
+        }
+
+        /* CTA Section */
+        .cta {
+            background: #111827;
+            border: 1px solid #1f2a3a;
+            border-radius: 24px;
+            padding: 48px;
+            text-align: center;
+            margin: 60px 0;
+        }
+
+        .cta h2 {
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+
+        .cta p {
+            color: #94a3b8;
+            margin-bottom: 32px;
+        }
+
+        /* Footer */
+        .footer {
+            border-top: 1px solid #1f2a3a;
+            padding: 40px 0;
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .banks-grid, .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 20px;
+            }
+            .hero h1 {
+                font-size: 36px;
+            }
+            .banks-grid, .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .header-content {
+                flex-direction: column;
+                gap: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Header -->
+<header class="header">
+    <div class="container">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">🏦</div>
+                <div class="logo-text">Bank<span>Consultant</span></div>
+            </div>
+            <div class="nav-links">
+                <a href="#">Главная</a>
+                <a href="#">О нас</a>
+                <a href="#">Банки</a>
+                <a href="#">Контакты</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+    <div class="container">
+        <h1>Подбор кредита<br>с максимальной выгодой</h1>
+        <p>Сравните предложения 20+ банков России за 5 минут. Получите готовый пакет документов и карту ближайших отделений.</p>
+        <div class="btn-group">
+            <a href="/start" class="btn btn-primary">Начать подбор →</a>
+            <a href="#banks" class="btn btn-outline">Наши партнеры</a>
+        </div>
+    </div>
+</section>
+
+<!-- Stats -->
+<section class="stats">
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <h3>20+</h3>
+                <p>Банков-партнеров</p>
+            </div>
+            <div class="stat-item">
+                <h3>83</h3>
+                <p>Региона России</p>
+            </div>
+            <div class="stat-item">
+                <h3>50k+</h3>
+                <p>Довольных клиентов</p>
+            </div>
+            <div class="stat-item">
+                <h3>98%</h3>
+                <p>Рекомендуют сервис</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Banks -->
+<div class="container" id="banks">
+    <h2 class="section-title">Ведущие банки России</h2>
+    <div class="banks-grid">
+        <div class="bank-card">
+            <h3>Сбербанк</h3>
+            <div class="rate">12.5% <small>годовых</small></div>
+            <div class="details">до 5 млн ₽ • до 5 лет</div>
+            <span class="badge">Потребительский</span>
+            <span class="badge">Ипотека</span>
+        </div>
+        <div class="bank-card">
+            <h3>ВТБ</h3>
+            <div class="rate">13.0% <small>годовых</small></div>
+            <div class="details">до 3 млн ₽ • до 4 лет</div>
+            <span class="badge">Потребительский</span>
+            <span class="badge">Ипотека</span>
+        </div>
+        <div class="bank-card">
+            <h3>Альфа-Банк</h3>
+            <div class="rate">14.0% <small>годовых</small></div>
+            <div class="details">до 2 млн ₽ • до 3 лет</div>
+            <span class="badge">Потребительский</span>
+            <span class="badge">Кредитная карта</span>
+        </div>
+        <div class="bank-card">
+            <h3>Тинькофф</h3>
+            <div class="rate">15.0% <small>годовых</small></div>
+            <div class="details">до 1 млн ₽ • до 2 лет</div>
+            <span class="badge">Потребительский</span>
+            <span class="badge">Кредитная карта</span>
+        </div>
+    </div>
+</div>
+
+<!-- Features -->
+<div class="container">
+    <h2 class="section-title">Почему профессионалы выбирают нас</h2>
+    <div class="features-grid">
+        <div class="feature">
+            <div class="feature-icon">📊</div>
+            <h4>Объективное сравнение</h4>
+            <p>Реальные ставки и условия. Без скрытых комиссий и маркетинговых уловок.</p>
+        </div>
+        <div class="feature">
+            <div class="feature-icon">⚡</div>
+            <h4>Быстрый анализ</h4>
+            <p>Алгоритм оценивает ваши параметры и подбирает оптимальные варианты за секунды.</p>
+        </div>
+        <div class="feature">
+            <div class="feature-icon">📋</div>
+            <h4>Готовый пакет документов</h4>
+            <p>Сформируем список документов для визита в банк. Не забудете ничего важного.</p>
+        </div>
+    </div>
+</div>
+
+<!-- CTA -->
+<div class="container">
+    <div class="cta">
+        <h2>Готовы найти идеальный кредит?</h2>
+        <p>Ответьте на 5 вопросов — получите список предложений, которые подходят именно вам.</p>
+        <a href="/start" class="btn btn-primary">Начать подбор →</a>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <p>© 2026 BankConsultant — профессиональный сервис подбора кредитных продуктов</p>
+        <p style="margin-top: 12px; font-size: 12px;">Работаем по всей России. Данные обновляются ежедневно.</p>
+    </div>
+</footer>
+</body>
+</html>

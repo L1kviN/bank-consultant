@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Вход</title>
+</head>
+<body>
+<h2>Вход в систему</h2>
+
+<p th:if="${success}" style="color: green;" th:text="${success}"></p>
+<p th:if="${error}" style="color: red;" th:text="${error}"></p>
+
+<form action="/login" method="post">
+    <input type="text" name="username" placeholder="Email" required><br>
+    <input type="password" name="password" placeholder="Пароль" required><br>
+    <button type="submit">Войти</button>
+</form>
+<a href="/register">Нет аккаунта? Зарегистрироваться</a>
+</body>
+</html>

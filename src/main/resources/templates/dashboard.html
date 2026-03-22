@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Подбор кредита</title>
+    <style>
+        .calculator {
+            background: #f5f5f5;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .payment {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .warning {
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .green {
+            color: green;
+        }
+        .yellow {
+            color: orange;
+        }
+        .red {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<h2>Подбор кредита</h2>
+
+<div class="calculator">
+    <h3>Калькулятор платежа</h3>
+    <div>
+        <span>Примерный ежемесячный платеж: </span>
+        <span class="payment" id="monthlyPayment">0</span> руб
+    </div>
+    <div id="debtLoad"></div>
+</div>
+
+<form action="/find-banks" method="post" id="creditForm">
+    <label>Вид займа:</label>
+    <select name="creditType">
+        <option value="consumer">Потребительский</option>
+        <option value="mortgage">Ипотека</option>
+        <option value="car">Автокредит</option>
+        <option value="card">Кредитная карта</option>
+    </select><br><br>
+
+    <label>Сумма кредита (руб):</label>
+    <input type="number" name="amount" id="amount" required><br><br>
+
+    <label>Срок (месяцев):</label>
+    <select name="termMonths" id="termMonths">
+        <option value="3">3 месяца</option>
+        <option value="6">6 месяцев</option>
+        <option value="12">1 год</option>
+        <option value="24">2 года</option>
+        <option value="36">3 года</option>
+        <option value="48">4 года</option>
+        <option value="60">5 лет</option>
+        <option value="72">6 лет</option>
+        <option value="84">7 лет</option>
+        <option value="96">8 лет</option>
+        <option value="108">9 лет</option>
+        <option value="120">10 лет</option>
+    </select><br><br>
+
+    <label>Ежемесячный доход (руб):</label>
+    <input type="number" name="income" id="income" required><br><br>
+
+    <label>Тип трудоустройства:</label>
+    <select name="employmentType">
+        <option value="employee">Наемный работник</option>
+        <option value="self_employed">Самозанятый</option>
+        <option value="individual_entrepreneur">ИП</option>
+        <option value="pensioner">Пенсионер</option>
+    </select><br><br>
+
+    <label>Кредитная история:</label>
+    <select name="creditHistory">
+        <option value="good">Хорошая</option>
+        <option value="average">Средняя</option>
+        <option value="bad">Плохая</option>
+        <option value="no_history">Нет истории</option>
+    </select><br><br>
+
+    <button type="submit">Подобрать банки</button>
+</form>
+
+<br>
+<a href="/profile/history">Мои заявки</a>
+<a href="/logout">Выйти</a>
+<a href="/">На главную</a>
+
+<script>
+    // средняя рыночная ставка для расчета
+    const avgRate = 15.0;
+
+    function calculateMonthlyPayment(amount, months, rate) {
+        if (amount <= 0 || months <= 0) return 0;
+        let monthlyRate = rate / 12 / 100;
+        if (monthlyRate === 0) return amount / months;
+        let factor = Math.pow(1 + monthlyRate, months);
+        let annuity = (monthlyRate * factor) / (factor - 1);
+        return amount * annuity;
+    }
+
+    function updateCalculator() {
+        let amount = parseFloat(document.getElementById('amount').value);
+        let months = parseInt(document.getElementById('termMonths').value);
+        let income = parseFloat(document.getElementById('income').value);
+
+        if (isNaN(amount) || isNaN(months) || amount <= 0) {
+            document.getElementById('monthlyPayment').innerText = '0';
+            document.getElementById('debtLoad').innerHTML = '';
+            return;
+        }
+
+        let payment = calculateMonthlyPayment(amount, months, avgRate);
+        document.getElementById('monthlyPayment').innerText = Math.round(payment).toLocaleString();
+
+        if (income > 0) {
+            let load = (payment / income) * 100;
+            let loadClass = '';
+            let warningText = '';
+
+            if (load < 30) {
+                loadClass = 'green';
+                warningText = 'Низкая нагрузка. Хорошие шансы на одобрение.';
+            } else if (load <= 50) {
+                loadClass = 'yellow';
+                warningText = 'Средняя нагрузка. Банки могут одобрить.';
+            } else {
+                loadClass = 'red';
+                warningText = '⚠️ Высокая нагрузка! Рекомендуем увеличить срок или уменьшить сумму.';
+            }
+
+            document.getElementById('debtLoad').innerHTML =
+                '<span class="' + loadClass + '">Нагрузка на доход: ' + load.toFixed(1) + '%</span><br>' +
+                '<span class="' + loadClass + '">' + warningText + '</span>';
+        } else {
+            document.getElementById('debtLoad').innerHTML = '<span>Укажите доход для расчета нагрузки</span>';
+        }
+    }
+
+    document.getElementById('amount').addEventListener('input', updateCalculator);
+    document.getElementById('termMonths').addEventListener('change', updateCalculator);
+    document.getElementById('income').addEventListener('input', updateCalculator);
+</script>
+</body>
+</html>

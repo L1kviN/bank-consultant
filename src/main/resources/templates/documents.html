@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Документы для кредита</title>
+    <style>
+        .doc-list {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .doc-list li {
+            margin: 10px 0;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+<h2>Список документов для получения кредита</h2>
+
+<div class="doc-list">
+    <h3>Вам понадобятся следующие документы:</h3>
+    <ul>
+        <li>✓ Паспорт гражданина РФ</li>
+        <li>✓ СНИЛС</li>
+        <li>✓ ИНН</li>
+        <li>✓ Справка 2-НДФЛ за последние 6 месяцев</li>
+        <li>✓ Копия трудовой книжки (заверенная)</li>
+        <li>✓ Заявление на выдачу кредита (заполняется в отделении)</li>
+    </ul>
+    <p><strong>Примечание:</strong> список может меняться в зависимости от банка и вида кредита. Уточните подробности в отделении банка.</p>
+</div>
+
+<form action="/generate-pdf" method="post">
+    <input type="hidden" name="bankId" th:value="${bankId}">
+    <input type="hidden" name="creditType" th:value="${creditType}">
+    <button type="submit">Скачать список документов (PDF)</button>
+</form>
+
+<br><br>
+<a href="/map?bankId=" th:href="@{/map(bankId=${bankId})}">Показать отделения на карте</a>
+<br><br>
+<a href="/dashboard">Новый поиск</a>
+<a href="/profile/history">Мои заявки</a>
+<a href="/logout">Выйти</a>
+</body>
+</html>

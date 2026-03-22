@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Результаты подбора</title>
+</head>
+<body>
+<h2>Подходящие банки</h2>
+
+<div th:each="offer : ${offers}">
+    <div style="border: 1px solid #ccc; padding: 15px; margin: 10px;">
+        <h3 th:text="${offer.bankName}"></h3>
+        <p>Ставка: <span th:text="${offer.minRate}"></span>% - <span th:text="${offer.maxRate}"></span>%</p>
+        <p>Ежемесячный платеж: <span th:text="${offer.monthlyPayment}"></span> руб</p>
+        <p>Максимальная сумма: <span th:text="${offer.maxAmount}"></span> руб</p>
+        <p>Минимальный доход: <span th:text="${offer.minIncome}"></span> руб</p>
+        <form action="/select-bank" method="post">
+            <input type="hidden" name="bankId" th:value="${offer.bankId}">
+            <input type="hidden" name="creditType" th:value="${offer.creditType}">
+            <input type="hidden" name="requestId" th:value="${requestId}">
+            <button type="submit">Выбрать этот банк</button>
+        </form>
+    </div>
+</div>
+
+<div th:if="${offers.empty}">
+    <p>Нет подходящих банков по вашим параметрам</p>
+</div>
+
+<br>
+<a href="/profile/history">Мои заявки</a>
+<a href="/dashboard">Новый поиск</a>
+</body>
+</html>

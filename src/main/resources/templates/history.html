@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Мои заявки</title>
+    <style>
+        .request-card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 8px;
+        }
+        .status {
+            font-weight: bold;
+        }
+        .status-in_progress { color: orange; }
+        .status-bank_selected { color: green; }
+        .status-completed { color: blue; }
+    </style>
+</head>
+<body>
+<h2>Мои заявки на кредит</h2>
+
+<div th:each="req : ${requests}">
+    <div class="request-card">
+        <p><strong>Дата:</strong> <span th:text="${req.createdAt}"></span></p>
+        <p><strong>Сумма:</strong> <span th:text="${req.amount}"></span> руб</p>
+        <p><strong>Срок:</strong> <span th:text="${req.termMonths}"></span> месяцев</p>
+        <p><strong>Тип кредита:</strong> <span th:text="${req.purpose}"></span></p>
+        <p><strong>Доход:</strong> <span th:text="${req.income}"></span> руб</p>
+        <p><strong>Ежемесячный платеж:</strong> <span th:text="${req.monthlyPayment}"></span> руб</p>
+        <p><strong>Статус:</strong>
+            <span th:class="'status status-' + ${req.status.name().toLowerCase()}" th:text="${req.status}"></span>
+        </p>
+        <p th:if="${req.selectedBank != null}">
+            <strong>Выбранный банк:</strong> <span th:text="${req.selectedBank.name}"></span>
+        </p>
+    </div>
+</div>
+
+<div th:if="${requests.empty}">
+    <p>У вас пока нет заявок</p>
+</div>
+
+<br>
+<a href="/dashboard">Новый поиск</a>
+<a href="/logout">Выйти</a>
+</body>
+</html>
