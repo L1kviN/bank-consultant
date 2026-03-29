@@ -2,48 +2,258 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Мои заявки</title>
+    <title>История заявок — BankConsultant</title>
     <style>
-        .request-card {
-            border: 1px solid #ddd;
-            padding: 15px;
-            margin: 10px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0e1a;
+            color: #e8edf2;
+        }
+        .header {
+            background: #0a0e1a;
+            border-bottom: 1px solid #1f2a3a;
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
             border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .logo-text {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .logo-text span {
+            color: #3b82f6;
+        }
+        .nav a {
+            color: #94a3b8;
+            text-decoration: none;
+            margin-left: 24px;
+            font-size: 14px;
+        }
+        .nav a:hover {
+            color: #3b82f6;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 24px;
+            color: #3b82f6;
+            text-decoration: none;
+        }
+        .requests-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .request-card {
+            background: #111827;
+            border: 1px solid #1f2a3a;
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.2s;
+        }
+        .request-card:hover {
+            border-color: #3b82f6;
+        }
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #1f2a3a;
+        }
+        .date {
+            color: #64748b;
+            font-size: 14px;
         }
         .status {
-            font-weight: bold;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
         }
-        .status-in_progress { color: orange; }
-        .status-bank_selected { color: green; }
-        .status-completed { color: blue; }
+        .status-in_progress {
+            background: rgba(234,179,8,0.1);
+            color: #eab308;
+        }
+        .status-bank_selected {
+            background: rgba(34,197,94,0.1);
+            color: #22c55e;
+        }
+        .status-completed {
+            background: rgba(59,130,246,0.1);
+            color: #3b82f6;
+        }
+        .request-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .detail {
+            font-size: 14px;
+        }
+        .detail strong {
+            color: #94a3b8;
+        }
+        .button-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #1f2a3a;
+        }
+        .btn-sm {
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            display: inline-block;
+        }
+        .btn-docs {
+            background: #3b82f6;
+            color: white;
+        }
+        .btn-docs:hover {
+            background: #2563eb;
+        }
+        .btn-map {
+            background: transparent;
+            border: 1px solid #3b82f6;
+            color: #3b82f6;
+        }
+        .btn-map:hover {
+            background: rgba(59,130,246,0.1);
+        }
+        .btn-disabled {
+            background: #1f2a3a;
+            color: #64748b;
+            cursor: not-allowed;
+            border: none;
+        }
+        .empty {
+            text-align: center;
+            padding: 60px;
+            background: #111827;
+            border-radius: 16px;
+        }
+        .footer {
+            text-align: center;
+            padding: 24px;
+            border-top: 1px solid #1f2a3a;
+            margin-top: 40px;
+            font-size: 12px;
+            color: #64748b;
+        }
+        @media (max-width: 640px) {
+            .request-header {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+            .button-group {
+                flex-direction: column;
+            }
+            .btn-sm {
+                text-align: center;
+            }
+        }
     </style>
 </head>
 <body>
-<h2>Мои заявки на кредит</h2>
+<header class="header">
+    <div class="logo">
+        <div class="logo-icon">🏦</div>
+        <div class="logo-text">Bank<span>Consultant</span></div>
+    </div>
+    <div class="nav">
+        <a href="/dashboard">Новый подбор</a>
+        <a href="/logout">Выйти</a>
+    </div>
+</header>
 
-<div th:each="req : ${requests}">
-    <div class="request-card">
-        <p><strong>Дата:</strong> <span th:text="${req.createdAt}"></span></p>
-        <p><strong>Сумма:</strong> <span th:text="${req.amount}"></span> руб</p>
-        <p><strong>Срок:</strong> <span th:text="${req.termMonths}"></span> месяцев</p>
-        <p><strong>Тип кредита:</strong> <span th:text="${req.purpose}"></span></p>
-        <p><strong>Доход:</strong> <span th:text="${req.income}"></span> руб</p>
-        <p><strong>Ежемесячный платеж:</strong> <span th:text="${req.monthlyPayment}"></span> руб</p>
-        <p><strong>Статус:</strong>
-            <span th:class="'status status-' + ${req.status.name().toLowerCase()}" th:text="${req.status}"></span>
-        </p>
-        <p th:if="${req.selectedBank != null}">
-            <strong>Выбранный банк:</strong> <span th:text="${req.selectedBank.name}"></span>
-        </p>
+<div class="container">
+    <a href="/dashboard" class="back-link">← На главную</a>
+
+    <h2 style="margin-bottom: 24px;">📋 Мои заявки на кредит</h2>
+
+    <div th:if="${not #lists.isEmpty(requests)}" class="requests-list">
+        <div class="request-card" th:each="req : ${requests}">
+            <div class="request-header">
+                <span class="date" th:text="${#temporals.format(req.createdAt, 'dd.MM.yyyy HH:mm')}"></span>
+                <span class="status" th:class="'status status-' + ${req.status.name()}" th:text="${req.status}"></span>
+            </div>
+            <div class="request-details">
+                <div class="detail"><strong>Сумма:</strong> <span th:text="${#numbers.formatDecimal(req.amount, 0, 2)} + ' ₽'"></span></div>
+                <div class="detail"><strong>Срок:</strong> <span th:text="${req.termMonths} + ' мес.'"></span></div>
+                <div class="detail"><strong>Тип:</strong> <span th:text="${req.purpose}"></span></div>
+                <div class="detail"><strong>Доход:</strong> <span th:text="${#numbers.formatDecimal(req.income, 0, 2)} + ' ₽'"></span></div>
+                <div class="detail"><strong>Платеж:</strong> <span th:text="${#numbers.formatDecimal(req.monthlyPayment, 0, 2)} + ' ₽'"></span></div>
+            </div>
+
+            <div th:if="${req.selectedBank != null}">
+                <div class="detail" style="margin-bottom: 12px;">
+                    🏦 <strong>Выбранный банк:</strong> <span th:text="${req.selectedBank.name}"></span>
+                </div>
+                <div class="button-group">
+                    <form action="/documents-from-history" method="post">
+                        <input type="hidden" name="bankId" th:value="${req.selectedBank.id}">
+                        <input type="hidden" name="creditType" th:value="${req.purpose}">
+                        <button type="submit" class="btn-sm btn-docs">📄 Посмотреть документы</button>
+                    </form>
+                    <form action="/map-from-history" method="post">
+                        <input type="hidden" name="bankId" th:value="${req.selectedBank.id}">
+                        <button type="submit" class="btn-sm btn-map">📍 Показать на карте</button>
+                    </form>
+                </div>
+            </div>
+
+            <div th:if="${req.selectedBank == null}" class="button-group">
+                <span class="btn-sm btn-disabled">📄 Документы недоступны (банк не выбран)</span>
+                <span class="btn-sm btn-disabled">📍 Карта недоступна (банк не выбран)</span>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${#lists.isEmpty(requests)}" class="empty">
+        <p>📭 У вас пока нет заявок</p>
+        <p style="color: #64748b; margin-top: 12px;">Создайте первую заявку в разделе подбора кредита</p>
+        <a href="/dashboard" style="display: inline-block; margin-top: 20px; color: #3b82f6;">Перейти к подбору</a>
     </div>
 </div>
 
-<div th:if="${requests.empty}">
-    <p>У вас пока нет заявок</p>
-</div>
-
-<br>
-<a href="/dashboard">Новый поиск</a>
-<a href="/logout">Выйти</a>
+<footer class="footer">
+    <p>© 2026 BankConsultant — профессиональный сервис подбора кредитных продуктов</p>
+</footer>
 </body>
 </html>

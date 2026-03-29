@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Админ-панель — BankConsultant</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0a0e1a; color: #e8edf2; }
+        .header { background: #0a0e1a; border-bottom: 1px solid #1f2a3a; padding: 16px 40px; }
+        .header h2 { font-size: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        .card { background: #111827; border: 1px solid #1f2a3a; border-radius: 16px; padding: 24px; margin-bottom: 24px; }
+        .card h3 { margin-bottom: 20px; font-size: 18px; }
+        input, select { width: 100%; padding: 12px; background: #0a0e1a; border: 1px solid #1f2a3a; border-radius: 8px; color: white; margin-bottom: 16px; }
+        button { background: #3b82f6; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; margin-right: 12px; }
+        button:hover { background: #2563eb; }
+        .btn-green { background: #22c55e; }
+        .btn-green:hover { background: #16a34a; }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+        .stat-card { background: #0a0e1a; border-radius: 12px; padding: 16px; text-align: center; }
+        .stat-number { font-size: 32px; font-weight: 700; color: #3b82f6; }
+        .stat-label { font-size: 14px; color: #94a3b8; margin-top: 8px; }
+        .bank-item { background: #0a0e1a; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+        .bank-name { font-size: 18px; font-weight: 600; color: #3b82f6; }
+        .result-message { padding: 12px; border-radius: 8px; margin-top: 16px; }
+        .success { background: rgba(34,197,94,0.1); border: 1px solid #22c55e; color: #22c55e; }
+        .error { background: rgba(239,68,68,0.1); border: 1px solid #ef4444; color: #ef4444; }
+        hr { border-color: #1f2a3a; margin: 20px 0; }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h2>🏦 Админ-панель: управление банками и геокодирование</h2>
+</div>
+
+<div class="container">
+    <!-- Статистика координат -->
+    <div class="card">
+        <h3>📍 Статистика геокодирования</h3>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" th:text="${totalOffices}">0</div>
+                <div class="stat-label">Всего отделений</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" th:text="${withCoords}">0</div>
+                <div class="stat-label">С координатами</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" th:text="${withoutCoords}">0</div>
+                <div class="stat-label">Без координат</div>
+            </div>
+        </div>
+        <button class="btn-green" onclick="updateAllCoordinates()">🌍 Обновить координаты всех отделений</button>
+        <div id="batchResult"></div>
+    </div>
+
+    <!-- Поиск банков через DaData -->
+    <div class="card">
+        <h3>🔍 Поиск банков через DaData API</h3>
+        <input type="text" id="searchInput" placeholder="Введите название банка...">
+        <input type="text" id="cityInput" placeholder="Город (необязательно)">
+        <button onclick="searchBanks()">Поиск</button>
+        <div id="searchResults"></div>
+    </div>
+</div>
+
+<script>
+    async function updateAllCoordinates() {
+        const resultDiv = document.getElementById('batchResult');
+        resultDiv.innerHTML = '<div class="result-message">⏳ Обработка... Это может занять несколько минут</div>';
+
+        try {
+            const response = await fetch('/admin/update-coordinates', { method: 'POST' });
+            const result = await response.json();
+            resultDiv.innerHTML = `<div class="result-message success">✅ ${result.message} (успешно: ${result.success}, ошибок: ${result.failed})</div>`;
+            setTimeout(() => location.reload(), 2000);
+        } catch (error) {
+            resultDiv.innerHTML = `<div class="result-message error">❌ Ошибка: ${error.message}</div>`;
+        }
+    }
+
+    async function searchBanks() {
+        const query = document.getElementById('searchInput').value;
+        const city = document.getElementById('cityInput').value;
+
+        if (!query) return;
+
+        const resultsDiv = document.getElementById('searchResults');
+        resultsDiv.innerHTML = '<div class="result-message">⏳ Поиск...</div>';
+
+        try {
+            const response = await fetch(`/admin/search-banks-api?query=${encodeURIComponent(query)}&city=${encodeURIComponent(city)}`, {
+                method: 'POST'
+            });
+            const data = await response.json();
+
+            resultsDiv.innerHTML = '<hr><h4>📋 Результаты поиска:</h4>';
+
+            if (data.suggestions && data.suggestions.length > 0) {
+                data.suggestions.forEach(bank => {
+                    resultsDiv.innerHTML += `
+                            <div class="bank-item">
+                                <div class="bank-name">${bank.value}</div>
+                                <div>БИК: ${bank.data.bic || '—'}</div>
+                                <div>ИНН: ${bank.data.inn || '—'}</div>
+                                <div>КПП: ${bank.data.kpp || '—'}</div>
+                                <div>Корсчет: ${bank.data.correspondent_account || '—'}</div>
+                                <div>Адрес: ${bank.data.address?.value || '—'}</div>
+                                <div>Статус: ${bank.data.state?.status || '—'}</div>
+                            </div>
+                        `;
+                });
+            } else {
+                resultsDiv.innerHTML += '<div class="result-message">Ничего не найдено</div>';
+            }
+        } catch (error) {
+            resultsDiv.innerHTML = `<div class="result-message error">❌ Ошибка поиска: ${error.message}</div>`;
+        }
+    }
+</script>
+</body>
+</html>

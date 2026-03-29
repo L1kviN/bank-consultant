@@ -32,28 +32,28 @@ public class BankSelectionService {
     public List<BankOfferDto> findSuitableBanks(CreditFilterDto filter) {
         List<BankOfferDto> result = new ArrayList<>();
 
-        // 1. Находим банки, подходящие по базовым параметрам
+        // Находим банки, подходящие по базовым параметрам
         List<Bank> suitableBanks = bankRepository.findSuitableBanks(
                 filter.getIncome(),
                 filter.getAmount(),
                 filter.getTermMonths()
         );
 
-        // 2. Фильтруем по типу кредита
+        // Фильтруем по типу кредита
         for (Bank bank : suitableBanks) {
             boolean hasCreditType = bankCreditTypeRepository
                     .existsByBankIdAndCreditType(bank.getId(), filter.getCreditType());
 
             if (!hasCreditType) continue;
 
-            // 3. Получаем условия кредитования для этого банка и типа кредита
+            // Получаем условия кредитования для этого банка и типа кредита
             CreditOffer offer = creditOfferRepository
                     .findByBankIdAndCreditType(bank.getId(), filter.getCreditType())
                     .orElse(null);
 
             if (offer == null) continue;
 
-            // 4. Рассчитываем ежемесячный платеж (берем среднюю ставку)
+            // Рассчитываем ежемесячный платеж (берем среднюю ставку)
             BigDecimal avgRate = offer.getMinRate().add(offer.getMaxRate())
                     .divide(BigDecimal.valueOf(2), 2, RoundingMode.HALF_UP);
 
@@ -63,7 +63,7 @@ public class BankSelectionService {
                     avgRate
             );
 
-            // 5. Создаем DTO для вывода
+            // Создаем DTO для вывода
             BankOfferDto dto = new BankOfferDto();
             dto.setBankId(bank.getId());
             dto.setBankName(bank.getName());

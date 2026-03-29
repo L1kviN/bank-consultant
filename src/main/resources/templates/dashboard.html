@@ -1,105 +1,326 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Подбор кредита</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Подбор кредита — BankConsultant</title>
     <style>
-        .calculator {
-            background: #f5f5f5;
-            padding: 15px;
-            margin: 20px 0;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0e1a;
+            color: #e8edf2;
+        }
+
+        .header {
+            background: #0a0e1a;
+            border-bottom: 1px solid #1f2a3a;
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
             border-radius: 8px;
-        }
-        .payment {
-            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-weight: bold;
-            color: #2c3e50;
         }
-        .warning {
-            color: red;
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .logo-text span {
+            color: #3b82f6;
+        }
+
+        .nav a {
+            color: #94a3b8;
+            text-decoration: none;
+            margin-left: 24px;
             font-size: 14px;
+        }
+
+        .nav a:hover {
+            color: #3b82f6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .city-banner {
+            background: linear-gradient(135deg, #1e3a5f, #0a0e1a);
+            border: 1px solid #3b82f6;
+            border-radius: 12px;
+            padding: 12px 20px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .city-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .city-name {
+            color: #3b82f6;
+            font-weight: 600;
+        }
+
+        .refresh-city {
+            background: transparent;
+            border: 1px solid #3b82f6;
+            color: #3b82f6;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .refresh-city:hover {
+            background: rgba(59,130,246,0.1);
+        }
+
+        .card {
+            background: #111827;
+            border: 1px solid #1f2a3a;
+            border-radius: 20px;
+            padding: 32px;
+        }
+
+        .card h2 {
+            margin-bottom: 24px;
+            font-size: 24px;
+        }
+
+        .calculator {
+            background: #0a0e1a;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid #1f2a3a;
+        }
+
+        .payment {
+            font-size: 32px;
+            font-weight: 700;
+            color: #3b82f6;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #cbd5e1;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 16px;
+            background: #0a0e1a;
+            border: 1px solid #1f2a3a;
+            border-radius: 8px;
+            color: #e8edf2;
+            font-size: 14px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #3b82f6;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
             margin-top: 10px;
         }
+
+        button:hover {
+            background: #2563eb;
+        }
+
+        .warning {
+            color: #ef4444;
+            font-size: 14px;
+            margin-top: 12px;
+        }
+
         .green {
-            color: green;
+            color: #22c55e;
         }
+
         .yellow {
-            color: orange;
+            color: #eab308;
         }
+
         .red {
-            color: red;
+            color: #ef4444;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 24px;
+            border-top: 1px solid #1f2a3a;
+            margin-top: 40px;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        @media (max-width: 640px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .nav a {
+                margin: 0 12px;
+            }
         }
     </style>
 </head>
 <body>
-<h2>Подбор кредита</h2>
 
-<div class="calculator">
-    <h3>Калькулятор платежа</h3>
-    <div>
-        <span>Примерный ежемесячный платеж: </span>
-        <span class="payment" id="monthlyPayment">0</span> руб
+<header class="header">
+    <div class="logo">
+        <div class="logo-icon">🏦</div>
+        <div class="logo-text">Bank<span>Consultant</span></div>
     </div>
-    <div id="debtLoad"></div>
+    <div class="nav">
+        <a href="/">Главная</a>
+        <a href="/profile/history">Мои заявки</a>
+        <a href="#" id="adminLink" style="display: none;">👑 Админ-панель</a>
+        <a href="/logout">Выйти</a>
+    </div>
+</header>
+
+<div class="container">
+    <div class="city-banner">
+        <div class="city-info">
+            <span>📍 Ваш город:</span>
+            <span class="city-name" id="userCity">—</span>
+        </div>
+        <button class="refresh-city" onclick="detectUserCity()">🔄 Определить заново</button>
+    </div>
+
+    <div class="card">
+        <h2>📋 Параметры кредита</h2>
+
+        <div class="calculator">
+            <p style="margin-bottom: 8px;">📊 Примерный ежемесячный платеж</p>
+            <div class="payment" id="monthlyPayment">0 ₽</div>
+            <div id="debtLoad" style="margin-top: 12px;"></div>
+        </div>
+
+        <form action="/find-banks" method="post" id="creditForm">
+            <div class="form-group">
+                <label>Вид займа</label>
+                <select name="creditType">
+                    <option value="consumer">Потребительский кредит</option>
+                    <option value="mortgage">Ипотека</option>
+                    <option value="car">Автокредит</option>
+                    <option value="card">Кредитная карта</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Сумма кредита (₽)</label>
+                <input type="number" name="amount" id="amount" required placeholder="от 10 000 до 10 000 000">
+            </div>
+
+            <div class="form-group">
+                <label>Срок кредита</label>
+                <select name="termMonths" id="termMonths">
+                    <option value="3">3 месяца</option>
+                    <option value="6">6 месяцев</option>
+                    <option value="12">1 год</option>
+                    <option value="24">2 года</option>
+                    <option value="36">3 года</option>
+                    <option value="48">4 года</option>
+                    <option value="60">5 лет</option>
+                    <option value="72">6 лет</option>
+                    <option value="84">7 лет</option>
+                    <option value="96">8 лет</option>
+                    <option value="108">9 лет</option>
+                    <option value="120">10 лет</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Ежемесячный доход (₽)</label>
+                <input type="number" name="income" id="income" required>
+            </div>
+
+            <div class="form-group">
+                <label>Тип трудоустройства</label>
+                <select name="employmentType">
+                    <option value="employee">Наемный работник (ТК РФ)</option>
+                    <option value="self_employed">Самозанятый</option>
+                    <option value="individual_entrepreneur">ИП</option>
+                    <option value="pensioner">Пенсионер</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Кредитная история</label>
+                <select name="creditHistory">
+                    <option value="good">Хорошая</option>
+                    <option value="average">Средняя</option>
+                    <option value="bad">Плохая</option>
+                    <option value="no_history">Нет истории</option>
+                </select>
+            </div>
+
+            <button type="submit">🔍 Подобрать банки</button>
+        </form>
+    </div>
 </div>
 
-<form action="/find-banks" method="post" id="creditForm">
-    <label>Вид займа:</label>
-    <select name="creditType">
-        <option value="consumer">Потребительский</option>
-        <option value="mortgage">Ипотека</option>
-        <option value="car">Автокредит</option>
-        <option value="card">Кредитная карта</option>
-    </select><br><br>
-
-    <label>Сумма кредита (руб):</label>
-    <input type="number" name="amount" id="amount" required><br><br>
-
-    <label>Срок (месяцев):</label>
-    <select name="termMonths" id="termMonths">
-        <option value="3">3 месяца</option>
-        <option value="6">6 месяцев</option>
-        <option value="12">1 год</option>
-        <option value="24">2 года</option>
-        <option value="36">3 года</option>
-        <option value="48">4 года</option>
-        <option value="60">5 лет</option>
-        <option value="72">6 лет</option>
-        <option value="84">7 лет</option>
-        <option value="96">8 лет</option>
-        <option value="108">9 лет</option>
-        <option value="120">10 лет</option>
-    </select><br><br>
-
-    <label>Ежемесячный доход (руб):</label>
-    <input type="number" name="income" id="income" required><br><br>
-
-    <label>Тип трудоустройства:</label>
-    <select name="employmentType">
-        <option value="employee">Наемный работник</option>
-        <option value="self_employed">Самозанятый</option>
-        <option value="individual_entrepreneur">ИП</option>
-        <option value="pensioner">Пенсионер</option>
-    </select><br><br>
-
-    <label>Кредитная история:</label>
-    <select name="creditHistory">
-        <option value="good">Хорошая</option>
-        <option value="average">Средняя</option>
-        <option value="bad">Плохая</option>
-        <option value="no_history">Нет истории</option>
-    </select><br><br>
-
-    <button type="submit">Подобрать банки</button>
-</form>
-
-<br>
-<a href="/profile/history">Мои заявки</a>
-<a href="/logout">Выйти</a>
-<a href="/">На главную</a>
+<footer class="footer">
+    <p>© 2026 BankConsultant — профессиональный сервис подбора кредитных продуктов</p>
+</footer>
 
 <script>
-    // средняя рыночная ставка для расчета
+    // ==================== КАЛЬКУЛЯТОР ====================
     const avgRate = 15.0;
 
     function calculateMonthlyPayment(amount, months, rate) {
@@ -117,13 +338,13 @@
         let income = parseFloat(document.getElementById('income').value);
 
         if (isNaN(amount) || isNaN(months) || amount <= 0) {
-            document.getElementById('monthlyPayment').innerText = '0';
+            document.getElementById('monthlyPayment').innerText = '0 ₽';
             document.getElementById('debtLoad').innerHTML = '';
             return;
         }
 
         let payment = calculateMonthlyPayment(amount, months, avgRate);
-        document.getElementById('monthlyPayment').innerText = Math.round(payment).toLocaleString();
+        document.getElementById('monthlyPayment').innerText = Math.round(payment).toLocaleString() + ' ₽';
 
         if (income > 0) {
             let load = (payment / income) * 100;
@@ -132,26 +353,79 @@
 
             if (load < 30) {
                 loadClass = 'green';
-                warningText = 'Низкая нагрузка. Хорошие шансы на одобрение.';
+                warningText = '✅ Низкая нагрузка. Хорошие шансы на одобрение.';
             } else if (load <= 50) {
                 loadClass = 'yellow';
-                warningText = 'Средняя нагрузка. Банки могут одобрить.';
+                warningText = '⚠️ Средняя нагрузка. Банки могут одобрить.';
             } else {
                 loadClass = 'red';
-                warningText = '⚠️ Высокая нагрузка! Рекомендуем увеличить срок или уменьшить сумму.';
+                warningText = '🔴 Высокая нагрузка! Рекомендуем увеличить срок или уменьшить сумму.';
             }
 
             document.getElementById('debtLoad').innerHTML =
                 '<span class="' + loadClass + '">Нагрузка на доход: ' + load.toFixed(1) + '%</span><br>' +
                 '<span class="' + loadClass + '">' + warningText + '</span>';
         } else {
-            document.getElementById('debtLoad').innerHTML = '<span>Укажите доход для расчета нагрузки</span>';
+            document.getElementById('debtLoad').innerHTML = '<span class="warning">Укажите доход для расчета нагрузки</span>';
         }
     }
 
     document.getElementById('amount').addEventListener('input', updateCalculator);
     document.getElementById('termMonths').addEventListener('change', updateCalculator);
     document.getElementById('income').addEventListener('input', updateCalculator);
+
+    // ==================== ОПРЕДЕЛЕНИЕ ГОРОДА И ГЕОЛОКАЦИЯ ====================
+    async function detectUserCity() {
+        try {
+            const response = await fetch('https://api.ipify.org?format=json');
+            const data = await response.json();
+            const ip = data.ip;
+            const cityResponse = await fetch(`/api/detect-city?ip=${ip}`);
+            const city = await cityResponse.text();
+
+            if (city && city !== 'неизвестно') {
+                document.getElementById('userCity').innerText = city;
+                localStorage.setItem('userCity', city);
+            } else {
+                document.getElementById('userCity').innerText = 'Москва (по умолчанию)';
+            }
+        } catch (error) {
+            console.error('Ошибка определения города:', error);
+            document.getElementById('userCity').innerText = 'Москва (по умолчанию)';
+        }
+
+        // Определяем геолокацию и сохраняем координаты
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var lat = position.coords.latitude;
+                var lng = position.coords.longitude;
+                localStorage.setItem('userLat', lat);
+                localStorage.setItem('userLng', lng);
+                console.log('Координаты сохранены:', lat, lng);
+                document.getElementById('userCity').innerText = '📍 Местоположение определено';
+            }, function(error) {
+                console.log('Геолокация не разрешена или ошибка:', error);
+            });
+        }
+    }
+
+    detectUserCity();
+
+    // ==================== ПРОВЕРКА РОЛИ АДМИНА ====================
+    async function checkAdminRole() {
+        try {
+            const response = await fetch('/api/user-role');
+            const role = await response.text();
+            if (role === 'admin') {
+                document.getElementById('adminLink').style.display = 'inline';
+                document.getElementById('adminLink').href = '/admin/banks';
+            }
+        } catch (error) {
+            console.error('Ошибка проверки роли:', error);
+        }
+    }
+
+    checkAdminRole();
 </script>
 </body>
 </html>

@@ -57,10 +57,25 @@ public class CreditController {
         return "results";
     }
 
+    @PostMapping("/documents-from-history")
+    public String documentsFromHistory(@RequestParam Long bankId, @RequestParam String creditType, Model model) {
+        model.addAttribute("bankId", bankId);
+        model.addAttribute("creditType", creditType);
+        return "documents";
+    }
+
+    @PostMapping("/map-from-history")
+    public String mapFromHistory(@RequestParam Long bankId, Model model) {
+        model.addAttribute("bankId", bankId);
+        return "redirect:/map?bankId=" + bankId;
+    }
+
     @PostMapping("/select-bank")
     public String selectBank(@RequestParam Long bankId,
                              @RequestParam String creditType,
                              @RequestParam(required = false) Long requestId,
+                             @RequestParam(required = false) Double userLat,
+                             @RequestParam(required = false) Double userLng,
                              Model model) {
         if (requestId != null) {
             loanRequestService.updateSelectedBank(requestId, bankId);
@@ -68,6 +83,12 @@ public class CreditController {
 
         model.addAttribute("bankId", bankId);
         model.addAttribute("creditType", creditType);
+
+        if (userLat != null && userLng != null) {
+            model.addAttribute("userLat", userLat);
+            model.addAttribute("userLng", userLng);
+        }
+
         return "documents";
     }
 }

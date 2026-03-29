@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Отделения банка — BankConsultant</title>
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=a8594b5a-3e60-49b8-9f73-99ffd5bcf52c&lang=ru_RU" type="text/javascript"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0a0e1a; color: #e8edf2; }
+        .header {
+            background: #0a0e1a;
+            border-bottom: 1px solid #1f2a3a;
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .logo { display: flex; align-items: center; gap: 10px; }
+        .logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, #3b82f6, #1e40af); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+        .logo-text { font-size: 18px; font-weight: 600; }
+        .logo-text span { color: #3b82f6; }
+        .nav a { color: #94a3b8; text-decoration: none; margin-left: 24px; font-size: 14px; }
+        .nav a:hover { color: #3b82f6; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 40px 20px; }
+        .back-link { display: inline-block; margin-bottom: 24px; color: #3b82f6; text-decoration: none; }
+        .bank-title { margin-bottom: 24px; font-size: 24px; }
+        .city-banner {
+            background: linear-gradient(135deg, #1e3a5f, #0a0e1a);
+            border: 1px solid #3b82f6;
+            border-radius: 12px;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .city-name { color: #3b82f6; font-weight: 600; }
+        .location-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .location-btn:hover { background: #2563eb; }
+        .status-text { font-size: 12px; color: #94a3b8; }
+        .map-container { background: #111827; border: 1px solid #1f2a3a; border-radius: 16px; overflow: hidden; margin-bottom: 24px; }
+        #map { height: 500px; width: 100%; }
+        .offices-list { background: #111827; border: 1px solid #1f2a3a; border-radius: 16px; padding: 20px; margin-top: 20px; }
+        .offices-list h3 { margin-bottom: 16px; font-size: 18px; }
+        .office-item { padding: 12px; border-bottom: 1px solid #1f2a3a; cursor: pointer; }
+        .office-item:hover { background: rgba(59,130,246,0.1); }
+        .office-item:last-child { border-bottom: none; }
+        .office-address { font-weight: 500; margin-bottom: 6px; }
+        .office-detail { font-size: 13px; color: #94a3b8; }
+        .footer { text-align: center; padding: 24px; border-top: 1px solid #1f2a3a; margin-top: 40px; font-size: 12px; color: #64748b; }
+    </style>
+</head>
+<body>
+<header class="header">
+    <div class="logo">
+        <div class="logo-icon">🏦</div>
+        <div class="logo-text">Bank<span>Consultant</span></div>
+    </div>
+    <div class="nav">
+        <a href="/dashboard">Новый подбор</a>
+        <a href="/profile/history">Мои заявки</a>
+        <a href="/logout">Выйти</a>
+    </div>
+</header>
+
+<div class="container">
+    <a href="/dashboard" class="back-link">← На главную</a>
+    <h2 class="bank-title">📍 Отделения банка <span th:text="${bankName}"></span></h2>
+
+    <div class="city-banner">
+        <div>
+            <span>🏙️ Ваш город:</span>
+            <span class="city-name" id="userCity">—</span>
+        </div>
+        <div id="geoStatus" class="status-text"></div>
+        <button id="locationBtn" class="location-btn">📍 Определить моё местоположение</button>
+    </div>
+
+    <div th:if="${not #lists.isEmpty(officesData)}">
+        <div class="map-container">
+            <div id="map"></div>
+        </div>
+        <div class="offices-list">
+            <h3>Список отделений</h3>
+            <div id="officesList"></div>
+        </div>
+    </div>
+
+    <div th:if="${#lists.isEmpty(officesData)}" class="empty" style="text-align:center; padding:60px;">
+        <p>🏢 Нет информации об отделениях этого банка</p>
+    </div>
+</div>
+
+<footer class="footer">
+    <p>© 2026 BankConsultant — профессиональный сервис подбора кредитных продуктов</p>
+</footer>
+
+<script th:inline="javascript">
+    var officesData = /*[[${officesData}]]*/ [];
+    var userLat = /*[[${userLat}]]*/ null;
+    var userLng = /*[[${userLng}]]*/ null;
+    var map;
+    var placemarks = [];
+
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+        var R = 6371;
+        var dLat = (lat2 - lat1) * Math.PI / 180;
+        var dLon = (lon2 - lon1) * Math.PI / 180;
+        var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon/2) * Math.sin(dLon/2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
+    }
+
+    function updateOfficesList(curUserLat, curUserLng) {
+        var container = document.getElementById('officesList');
+        if (!container) return;
+
+        var officesWithDistance = [];
+        for (var i = 0; i < officesData.length; i++) {
+            var office = officesData[i];
+            if (curUserLat && curUserLng && office.lat && office.lng) {
+                var dist = calculateDistance(curUserLat, curUserLng, office.lat, office.lng);
+                officesWithDistance.push({office: office, distance: dist});
+            } else {
+                officesWithDistance.push({office: office, distance: null});
+            }
+        }
+
+        if (curUserLat && curUserLng) {
+            officesWithDistance.sort(function(a, b) {
+                return a.distance - b.distance;
+            });
+        }
+
+        container.innerHTML = '';
+        for (var i = 0; i < officesWithDistance.length; i++) {
+            var item = officesWithDistance[i];
+            var office = item.office;
+            var div = document.createElement('div');
+            div.className = 'office-item';
+            var distanceHtml = '';
+            if (item.distance !== null) {
+                distanceHtml = '<div style="color: #3b82f6; font-size: 12px; margin-top: 4px;">📍 Расстояние: ' + item.distance.toFixed(1) + ' км</div>';
+            }
+            div.innerHTML = '<div class="office-address">🏢 ' + office.address + '</div>' +
+                (office.workTime ? '<div class="office-detail">🕐 ' + office.workTime + '</div>' : '') +
+                (office.phone ? '<div class="office-detail">📞 ' + office.phone + '</div>' : '') +
+                distanceHtml;
+            div.onclick = (function(lat, lng) {
+                return function() { map.setCenter([lat, lng], 15); };
+            })(office.lat, office.lng);
+            container.appendChild(div);
+        }
+    }
+
+    function initMap(offices, curUserLat, curUserLng) {
+        var centerLat = curUserLat || 55.751244;
+        var centerLng = curUserLng || 37.618423;
+        var zoom = curUserLat ? 12 : 10;
+
+        if (map) {
+            map.destroy();
+        }
+
+        map = new ymaps.Map('map', {
+            center: [centerLat, centerLng],
+            zoom: zoom,
+            controls: ['zoomControl', 'fullscreenControl']
+        });
+
+        if (placemarks.length) {
+            map.geoObjects.remove(placemarks);
+            placemarks = [];
+        }
+
+        var bounds = [];
+
+        for (var i = 0; i < offices.length; i++) {
+            var office = offices[i];
+            var lat = office.lat;
+            var lng = office.lng;
+
+            if (lat && lng && !isNaN(lat) && !isNaN(lng)) {
+                var balloonContent = '<b>' + office.address + '</b>';
+                if (office.workTime) balloonContent += '<br>🕐 ' + office.workTime;
+                if (office.phone) balloonContent += '<br>📞 ' + office.phone;
+
+                var placemark = new ymaps.Placemark([lat, lng], {
+                    balloonContent: balloonContent,
+                    hintContent: office.address
+                }, {
+                    preset: 'islands#blueBankIcon'
+                });
+
+                map.geoObjects.add(placemark);
+                placemarks.push(placemark);
+                bounds.push([lat, lng]);
+            }
+        }
+
+        if (curUserLat && curUserLng) {
+            var userPlacemark = new ymaps.Placemark([curUserLat, curUserLng], {
+                balloonContent: '📍 Вы здесь',
+                hintContent: 'Ваше местоположение'
+            }, {
+                preset: 'islands#redCircleIcon'
+            });
+            map.geoObjects.add(userPlacemark);
+            placemarks.push(userPlacemark);
+            bounds.push([curUserLat, curUserLng]);
+        }
+
+        if (bounds.length > 0) {
+            var boundsObj = new ymaps.geometry.Rectangle(bounds);
+            map.setBounds(boundsObj.getBounds(), {
+                checkZoomRange: true,
+                zoomMargin: 50
+            });
+        }
+    }
+
+    async function detectCity() {
+        try {
+            const ipResponse = await fetch('https://api.ipify.org?format=json');
+            const ipData = await ipResponse.json();
+            const ip = ipData.ip;
+            const cityResponse = await fetch(`/api/detect-city?ip=${ip}`);
+            const city = await cityResponse.text();
+            if (city && city !== 'москва') {
+                document.getElementById('userCity').innerText = city;
+            } else {
+                document.getElementById('userCity').innerText = 'Москва';
+            }
+        } catch (error) {
+            document.getElementById('userCity').innerText = 'Москва';
+        }
+    }
+
+    function getUserLocation() {
+        var statusDiv = document.getElementById('geoStatus');
+
+        if (navigator.geolocation) {
+            statusDiv.innerHTML = '⏳ Запрос разрешения...';
+
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    var lat = position.coords.latitude;
+                    var lng = position.coords.longitude;
+                    console.log("Геолокация:", lat, lng);
+
+                    initMap(officesData, lat, lng);
+                    updateOfficesList(lat, lng);
+                    statusDiv.innerHTML = '✅ Местоположение определено';
+                },
+                function(error) {
+                    console.error("Ошибка:", error);
+                    var msg = '';
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            msg = '❌ Доступ запрещен. Разрешите в браузере.';
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            msg = '❌ Не удалось определить.';
+                            break;
+                        case error.TIMEOUT:
+                            msg = '❌ Время истекло.';
+                            break;
+                        default:
+                            msg = '❌ Ошибка: ' + error.message;
+                    }
+                    statusDiv.innerHTML = msg;
+                    initMap(officesData);
+                    updateOfficesList();
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
+            );
+        } else {
+            statusDiv.innerHTML = '❌ Ваш браузер не поддерживает геолокацию';
+            initMap(officesData);
+            updateOfficesList();
+        }
+    }
+
+    ymaps.ready(function() {
+        if (userLat && userLng) {
+            initMap(officesData, userLat, userLng);
+            updateOfficesList(userLat, userLng);
+            document.getElementById('geoStatus').innerHTML = '📍 Ваше местоположение из формы';
+        } else {
+            initMap(officesData);
+            updateOfficesList();
+        }
+        detectCity();
+
+        document.getElementById('locationBtn').addEventListener('click', getUserLocation);
+    });
+</script>
+</body>
+</html>

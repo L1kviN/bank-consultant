@@ -2,57 +2,82 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Документы для кредита</title>
+    <title>Документы для кредита — BankConsultant</title>
     <style>
-        .doc-list {
-            background: #f5f5f5;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0a0e1a; color: #e8edf2; }
+        .header {
+            background: #0a0e1a;
+            border-bottom: 1px solid #1f2a3a;
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
         }
-        .doc-list li {
-            margin: 10px 0;
-        }
-        button {
-            background: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #45a049;
-        }
+        .logo { display: flex; align-items: center; gap: 10px; }
+        .logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, #3b82f6, #1e40af); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+        .logo-text { font-size: 18px; font-weight: 600; }
+        .logo-text span { color: #3b82f6; }
+        .nav a { color: #94a3b8; text-decoration: none; margin-left: 24px; font-size: 14px; }
+        .nav a:hover { color: #3b82f6; }
+        .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+        .card { background: #111827; border: 1px solid #1f2a3a; border-radius: 20px; padding: 40px; }
+        .card h2 { margin-bottom: 24px; }
+        .doc-list { background: #0a0e1a; border-radius: 12px; padding: 24px; margin: 24px 0; }
+        .doc-list li { margin: 12px 0; margin-left: 20px; }
+        button { width: 100%; padding: 14px; background: #3b82f6; border: none; border-radius: 8px; color: white; font-weight: 600; font-size: 16px; cursor: pointer; }
+        button:hover { background: #2563eb; }
+        .links { display: flex; gap: 16px; justify-content: center; margin-top: 24px; flex-wrap: wrap; }
+        .links a { color: #3b82f6; text-decoration: none; padding: 8px 16px; border: 1px solid #3b82f6; border-radius: 8px; }
+        .links a:hover { background: rgba(59,130,246,0.1); }
+        .footer { text-align: center; padding: 24px; border-top: 1px solid #1f2a3a; margin-top: 40px; font-size: 12px; color: #64748b; }
     </style>
 </head>
 <body>
-<h2>Список документов для получения кредита</h2>
+<header class="header">
+    <div class="logo">
+        <div class="logo-icon">🏦</div>
+        <div class="logo-text">Bank<span>Consultant</span></div>
+    </div>
+    <div class="nav">
+        <a href="/dashboard">Новый подбор</a>
+        <a href="/profile/history">Мои заявки</a>
+        <a href="/logout">Выйти</a>
+    </div>
+</header>
 
-<div class="doc-list">
-    <h3>Вам понадобятся следующие документы:</h3>
-    <ul>
-        <li>✓ Паспорт гражданина РФ</li>
-        <li>✓ СНИЛС</li>
-        <li>✓ ИНН</li>
-        <li>✓ Справка 2-НДФЛ за последние 6 месяцев</li>
-        <li>✓ Копия трудовой книжки (заверенная)</li>
-        <li>✓ Заявление на выдачу кредита (заполняется в отделении)</li>
-    </ul>
-    <p><strong>Примечание:</strong> список может меняться в зависимости от банка и вида кредита. Уточните подробности в отделении банка.</p>
+<div class="container">
+    <div class="card">
+        <h2>📄 Список документов для получения кредита</h2>
+        <p style="color: #94a3b8; margin-bottom: 16px;">Возьмите эти документы с собой при визите в банк</p>
+
+        <div class="doc-list">
+            <ul>
+                <li>✓ Паспорт гражданина РФ</li>
+                <li>✓ СНИЛС</li>
+                <li>✓ ИНН</li>
+                <li>✓ Справка 2-НДФЛ за последние 6 месяцев</li>
+                <li>✓ Копия трудовой книжки (заверенная)</li>
+                <li>✓ Заявление на выдачу кредита (заполняется в отделении)</li>
+            </ul>
+            <p style="margin-top: 16px; font-size: 14px; color: #64748b;">Список может меняться в зависимости от банка. Уточните в отделении.</p>
+        </div>
+
+        <form action="/generate-pdf" method="post">
+            <input type="hidden" name="bankId" th:value="${bankId}">
+            <input type="hidden" name="creditType" th:value="${creditType}">
+            <button type="submit">📥 Скачать список документов (PDF)</button>
+        </form>
+
+        <div class="links">
+            <a th:href="@{/map(bankId=${bankId}, lat=${userLat}, lng=${userLng})}">📍 Показать отделения на карте</a>
+        </div>
+    </div>
 </div>
 
-<form action="/generate-pdf" method="post">
-    <input type="hidden" name="bankId" th:value="${bankId}">
-    <input type="hidden" name="creditType" th:value="${creditType}">
-    <button type="submit">Скачать список документов (PDF)</button>
-</form>
-
-<br><br>
-<a href="/map?bankId=" th:href="@{/map(bankId=${bankId})}">Показать отделения на карте</a>
-<br><br>
-<a href="/dashboard">Новый поиск</a>
-<a href="/profile/history">Мои заявки</a>
-<a href="/logout">Выйти</a>
+<footer class="footer">
+    <p>© 2026 BankConsultant — профессиональный сервис подбора кредитных продуктов</p>
+</footer>
 </body>
 </html>
