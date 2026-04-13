@@ -1,0 +1,51 @@
+.back-link { 
+    display: inline-block; 
+    margin-bottom: 24px; 
+    color: var(--text-primary); 
+    text-decoration: none; 
+}
+.bank-title { 
+    margin-bottom: 24px; 
+    font-size: 24px; 
+}
+.map-container { 
+    background: var(--card-bg); 
+    border: 1px solid var(--border-color); 
+    border-radius: 16px; 
+    overflow: hidden; 
+    margin-bottom: 24px; 
+}
+#map { 
+    height: 500px; 
+    width: 100%; 
+}
+.offices-list { 
+    background: var(--card-bg); 
+    border: 1px solid var(--border-color); 
+    border-radius: 16px; 
+    padding: 20px; 
+    margin-top: 20px; 
+}
+.offices-list h3 { 
+    margin-bottom: 16px; 
+    font-size: 18px; 
+}
+.office-item { 
+    padding: 12px; 
+    border-bottom: 1px solid var(--border-color); 
+    cursor: pointer; 
+}
+.office-item:hover { 
+    background: var(--hover-bg); 
+}
+.office-item:last-child { 
+    border-bottom: none; 
+}
+.office-address { 
+    font-weight: 500; 
+    margin-bottom: 6px; 
+}
+.office-detail { 
+    font-size: 13px; 
+    color: var(--text-muted); 
+}

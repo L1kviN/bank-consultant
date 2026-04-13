@@ -1,0 +1,50 @@
+.card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 40px;
+}
+.card h2 {
+    margin-bottom: 24px;
+}
+.doc-list {
+    background: var(--bg-color);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 24px 0;
+}
+.doc-list li {
+    margin: 12px 0;
+    margin-left: 20px;
+}
+button, .btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--btn-primary-bg);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+}
+button:hover, .btn:hover {
+    background: var(--btn-primary-hover);
+}
+.links {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 24px;
+    flex-wrap: wrap;
+}
+.links a {
+    color: var(--text-primary);
+    text-decoration: none;
+    padding: 8px 16px;
+    border: 1px solid var(--text-primary);
+    border-radius: 8px;
+}
+.links a:hover {
+    background: var(--hover-bg);
+}

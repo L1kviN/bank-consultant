@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Контакты — BankConsultant</title>
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/css/contacts.css}">
+    <script th:src="@{/js/theme.js}"></script>
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">🏦</div>
+            <div class="logo-text">Bank<span>Consultant</span></div>
+        </div>
+        <div class="nav-links">
+            <a th:href="@{/}">Главная</a>
+            <a th:href="@{/contacts}">Контакты</a>
+            <a th:href="@{/profile/history}">Мои заявки</a>
+            <a th:href="@{/logout}">Выйти</a>
+            <button id="themeToggleBtn" class="theme-toggle-btn" aria-label="Переключить тему">☀️</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="contacts-card">
+            <h1 class="contacts-title">📬 Свяжитесь с нами</h1>
+
+            <div class="contact-item">
+                <div class="contact-icon">✉️</div>
+                <div class="contact-info">
+                    <span class="contact-label">По всем вопросам (Электронная почта)</span>
+                    <a href="mailto:Kirill56.vorobev56@mail.ru" class="contact-value">Kirill56.vorobev56@mail.ru</a>
+                </div>
+            </div>
+
+            <div class="contact-item">
+                <div class="contact-icon">💬</div>
+                <div class="contact-info">
+                    <span class="contact-label">Поддержка в Telegram</span>
+                    <a href="https://t.me/BankConsultant_Support" class="contact-value"
+                        target="_blank">@BankConsultant_Support</a>
+                </div>
+            </div>
+
+            <div class="contact-item">
+                <div class="contact-icon">📞</div>
+                <div class="contact-info">
+                    <span class="contact-label">Горячая линия</span>
+                    <a href="tel:+78006491433" class="contact-value">8 (800) 555-35-35</a>
+                </div>
+            </div>
+
+            <div class="contact-item">
+                <div class="contact-icon">🕒</div>
+                <div class="contact-info">
+                    <span class="contact-label">Режим работы</span>
+                    <span class="contact-value" style="text-decoration: none; pointer-events: none;">Пн-Вс: 9:00 - 21:00
+                        (МСК)</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>© 2026 BankConsultant — профессиональный сервис подбора кредитных продуктов</p>
+    </footer>
+
+</body>
+
+</html>

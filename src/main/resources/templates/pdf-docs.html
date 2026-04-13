@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <!-- We must close all tags e.g. <meta /> because openhtmltopdf uses strict XHTML parsing -->
+    <title>Документы для кредита</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #ffffff;
+            color: #0f172a;
+            margin: 0;
+            padding: 40px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .header {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0f172a;
+        }
+        .logo span {
+            color: #2563eb;
+        }
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #0f172a;
+        }
+        .subtitle {
+            color: #64748b;
+            margin-bottom: 30px;
+        }
+        .info-box {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 30px;
+        }
+        .info-box p {
+            margin: 5px 0;
+        }
+        .doc-list {
+            margin-bottom: 30px;
+        }
+        .doc-list h3 {
+            font-size: 16px;
+            color: #1e293b;
+            margin-bottom: 15px;
+        }
+        .doc-item {
+            margin-bottom: 10px;
+            padding-left: 20px;
+        }
+        .doc-item:before {
+            content: "✓";
+            color: #2563eb;
+            font-weight: bold;
+            display: inline-block;
+            width: 20px;
+            margin-left: -20px;
+        }
+        .footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            font-size: 12px;
+            color: #94a3b8;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="logo">Bank<span>Consultant</span></div>
+    </div>
+
+    <div class="title">Список документов для получения кредита</div>
+    <div class="subtitle">Возьмите эти документы с собой при визите в банк</div>
+
+    <div class="info-box">
+        <p><strong>Тип заявки: </strong> <span th:text="${creditTypeName}">Потребительский кредит</span></p>
+        <p th:if="${bankName != null}"><strong>Рекомендуемый банк: </strong> <span th:text="${bankName}">Сбербанк</span></p>
+        <p th:if="${amount != null}"><strong>Запрашиваемая сумма: </strong> <span th:text="${amount + ' ₽'}">100 000 ₽</span></p>
+    </div>
+
+    <div class="doc-list">
+        <h3>Обязательные документы:</h3>
+        <div th:each="doc : ${documents}" class="doc-item">
+            <span th:text="${doc}">Паспорт гражданина РФ</span>
+        </div>
+    </div>
+
+    <div class="doc-list" th:if="${optionalDocuments != null and !optionalDocuments.isEmpty()}">
+        <h3>Дополнительные документы (повышают шанс одобрения):</h3>
+        <div th:each="doc : ${optionalDocuments}" class="doc-item">
+            <span th:text="${doc}">СНИЛС</span>
+        </div>
+    </div>
+
+    <p style="font-size: 12px; color: #64748b; margin-top: 30px;">
+        * Точный список документов может отличаться в зависимости от выбранной программы банка и вашей кредитной истории.
+    </p>
+
+    <div class="footer">
+        © 2026 BankConsultant — профессиональный сервис подбора кредитных продуктов
+        <br/>
+        Документ сгенерирован автоматически: <span th:text="${#dates.format(#dates.createNow(), 'dd.MM.yyyy HH:mm')}">01.01.2026</span>
+    </div>
+
+</body>
+</html>

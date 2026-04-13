@@ -1,0 +1,127 @@
+.city-banner {
+    background: linear-gradient(135deg, var(--hover-bg), var(--bg-color));
+    border: 1px solid var(--text-primary);
+    border-radius: 12px;
+    padding: 12px 20px;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.city-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.city-name {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.refresh-city {
+    background: transparent;
+    border: 1px solid var(--text-primary);
+    color: var(--text-primary);
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.refresh-city:hover {
+    background: var(--hover-bg);
+}
+
+.card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: var(--shadow-md);
+}
+
+.card h2 {
+    margin-bottom: 24px;
+    font-size: 24px;
+}
+
+.calculator {
+    background: var(--bg-color);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 30px;
+    border: 1px solid var(--border-color);
+}
+
+.payment {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+input, select {
+    width: 100%;
+    padding: 12px 16px;
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-main);
+    font-size: 14px;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--text-primary);
+}
+
+button[type="submit"] {
+    width: 100%;
+    padding: 14px;
+    background: var(--btn-primary-bg);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button[type="submit"]:hover {
+    background: var(--btn-primary-hover);
+}
+
+.warning {
+    color: #ef4444;
+    font-size: 14px;
+    margin-top: 12px;
+}
+
+.green {
+    color: #22c55e;
+}
+
+.yellow {
+    color: #eab308;
+}
+
+.red {
+    color: #ef4444;
+}

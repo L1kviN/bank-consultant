@@ -3,116 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Вход — BankConsultant</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0a0e1a;
-            color: #e8edf2;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .card {
-            background: #111827;
-            border: 1px solid #1f2a3a;
-            border-radius: 20px;
-            padding: 40px;
-            width: 100%;
-            max-width: 450px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-        }
-        .card h1 {
-            font-size: 28px;
-            margin-bottom: 8px;
-        }
-        .card p {
-            color: #94a3b8;
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #cbd5e1;
-        }
-        input {
-            width: 100%;
-            padding: 12px 16px;
-            background: #0a0e1a;
-            border: 1px solid #1f2a3a;
-            border-radius: 8px;
-            color: #e8edf2;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-        input:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
-        }
-        button {
-            width: 100%;
-            padding: 12px;
-            background: #3b82f6;
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        button:hover {
-            background: #2563eb;
-        }
-        .link {
-            text-align: center;
-            margin-top: 24px;
-            font-size: 14px;
-            color: #94a3b8;
-        }
-        .link a {
-            color: #3b82f6;
-            text-decoration: none;
-        }
-        .link a:hover {
-            text-decoration: underline;
-        }
-        .error {
-            background: rgba(239,68,68,0.1);
-            border: 1px solid #ef4444;
-            color: #ef4444;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-        .success {
-            background: rgba(34,197,94,0.1);
-            border: 1px solid #22c55e;
-            color: #22c55e;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+    <script th:src="@{/js/theme.js}"></script>
 </head>
-<body>
-<div class="card">
+<body class="auth-body">
+<div class="auth-card">
     <h1>Вход в систему</h1>
-    <p>Введите email и пароль для доступа к подбору кредитов</p>
+    <p class="subtitle">Введите email и пароль для доступа к подбору кредитов</p>
 
     <p th:if="${success}" class="success" th:text="${success}"></p>
     <p th:if="${error}" class="error" th:text="${error}"></p>

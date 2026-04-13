@@ -20,6 +20,11 @@ public class MainController {
         return "index";
     }
 
+    @GetMapping("/contacts")
+    public String contacts() {
+        return "contacts";
+    }
+
     @GetMapping("/login")
     public String login() {
         return "login";
