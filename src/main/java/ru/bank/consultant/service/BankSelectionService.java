@@ -4,7 +4,6 @@ import ru.bank.consultant.dto.BankOfferDto;
 import ru.bank.consultant.dto.CreditFilterDto;
 import ru.bank.consultant.entity.Bank;
 import ru.bank.consultant.entity.CreditOffer;
-import ru.bank.consultant.repository.BankCreditTypeRepository;
 import ru.bank.consultant.repository.BankRepository;
 import ru.bank.consultant.repository.CreditOfferRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +22,7 @@ public class BankSelectionService {
     @Autowired
     private CreditOfferRepository creditOfferRepository;
 
-    @Autowired
-    private BankCreditTypeRepository bankCreditTypeRepository;
+
 
     @Autowired
     private CalculatorService calculatorService;
@@ -39,12 +37,8 @@ public class BankSelectionService {
                 filter.getTermMonths()
         );
 
-        // Фильтруем по типу кредита
+        // Фильтруем по наличию кредитных предложений
         for (Bank bank : suitableBanks) {
-            boolean hasCreditType = bankCreditTypeRepository
-                    .existsByBankIdAndCreditType(bank.getId(), filter.getCreditType());
-
-            if (!hasCreditType) continue;
 
             // Получаем условия кредитования для этого банка и типа кредита
             CreditOffer offer = creditOfferRepository

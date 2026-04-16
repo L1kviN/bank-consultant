@@ -2,7 +2,7 @@ package ru.bank.consultant.service;
 
 import ru.bank.consultant.entity.BankOffice;
 import ru.bank.consultant.repository.BankOfficeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -15,7 +15,7 @@ public class GeocodeBatchService {
     private final BankOfficeRepository bankOfficeRepository;
     private final DaDataService daDataService;
 
-    @Autowired
+
     public GeocodeBatchService(BankOfficeRepository bankOfficeRepository, DaDataService daDataService) {
         this.bankOfficeRepository = bankOfficeRepository;
         this.daDataService = daDataService;

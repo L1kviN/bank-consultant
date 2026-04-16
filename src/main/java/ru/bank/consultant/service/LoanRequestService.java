@@ -27,8 +27,6 @@ public class LoanRequestService {
     @Autowired
     private BankRepository bankRepository;
 
-    @Autowired
-    private CalculatorService calculatorService;
 
     // старый метод сохранения
     public void saveRequest(CreditFilterDto filter, BigDecimal monthlyPayment) {

@@ -16,11 +16,9 @@ import java.math.BigDecimal;
 public class DaDataService {
 
     private final WebClient webClient;
-    private final String apiKey;
     private final ObjectMapper objectMapper;
 
     public DaDataService(@Value("${dadata.api.key}") String apiKey) {
-        this.apiKey = apiKey;
         this.objectMapper = new ObjectMapper();
         this.webClient = WebClient.builder()
                 .baseUrl("https://suggestions.dadata.ru/suggestions/api/4_1/rs")
@@ -85,7 +83,7 @@ public class DaDataService {
                             }
                         }
                         return Mono.error(new RuntimeException("Не удалось получить координаты для: " + address));
-                    } catch (Exception e) {
+                    } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
                         return Mono.error(new RuntimeException("Ошибка геокодирования: " + address, e));
                     }
                 });

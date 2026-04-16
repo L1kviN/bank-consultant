@@ -42,7 +42,7 @@ public class PdfController {
             }
             
             // Настройка документов в зависимости от типа кредита
-            String creditTypeName = "Потребительский кредит";
+            String creditTypeName;
             List<String> documents;
             List<String> optionalDocuments;
 
@@ -116,7 +116,7 @@ public class PdfController {
                     .body(pdfBytes);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Ошибка при генерации PDF: " + e.getMessage());
             return ResponseEntity.internalServerError().build();
         }
     }
